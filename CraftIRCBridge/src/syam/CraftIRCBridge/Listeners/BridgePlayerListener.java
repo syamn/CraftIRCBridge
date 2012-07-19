@@ -2,9 +2,17 @@ package syam.CraftIRCBridge.Listeners;
 
 import java.util.logging.Logger;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
@@ -26,18 +34,32 @@ public class BridgePlayerListener implements Listener{
 
 	/* 登録するイベントはここから下に */
 
-	@EventHandler
+	/**
+	 * コマンド実行イベント
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onServerCommand(final ServerCommandEvent event) {
-		if (event.getCommand().startsWith("say")) {
-			String message = event.getCommand().substring(4, event.getCommand().length() - 1);
-			// broadcast
-			for (Bridge b : BridgeManager.bridges) {
-				b.endPoint.messageOut(message, "Server", b.craftIRCTag, b.GameChannel.getName(), b.GameChannel.getNick());
-			}
+		String cmd = event.getCommand();
+		if (cmd.length() > 4 && cmd.toLowerCase().startsWith("say")) {
+			String message = event.getCommand().substring(4, event.getCommand().length());
+			postIRConce("[Server]", message); // キャスト
+		}
+		if (cmd.length() > 6 && cmd.toLowerCase().startsWith("bcast")) {
+			String message = event.getCommand().substring(6, event.getCommand().length());
+			postIRConce("[Server]", message); // キャスト
+		}
+		if (cmd.length() > 12 && cmd.toLowerCase().startsWith("admin bcast")) {
+			String message = event.getCommand().substring(12, event.getCommand().length());
+			postIRConce("[sys]", message); // キャスト
 		}
 	}
 
-	@EventHandler
+	/**
+	 * チャンネルチャットイベント [HeroChat]
+	 * @param e
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChannelChat(final ChannelChatEvent e) {
 		if (e.getResult() == Result.ALLOWED) {
 			String message = e.getBukkitEvent().getMessage();
@@ -61,5 +83,46 @@ public class BridgePlayerListener implements Listener{
 				b.endPoint.messageOut(message, e.getSender().getName(), b.craftIRCTag, c, n);
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerJoin(final PlayerJoinEvent event) {
+		Player p = event.getPlayer();
+		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ [/"+p.getAddress().getHostString()+"]");
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerQuit(final PlayerQuitEvent event) {
+		Player p = event.getPlayer();
+		Location l = p.getLocation();
+		postIRConce("*** ", "'" + event.getPlayer().getDisplayName() + "' さんが切断しました！ ("+l.getWorld().getName()+": "+l.getBlockX()+", "+l.getBlockY()+", "+l.getBlockZ()+")");
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerKick(final PlayerKickEvent event) {
+		Player p = event.getPlayer();
+		postIRConce("*** ", "'" + p.getDisplayName() + "' はKickされました:["+event.getReason()+"]["+p.getAddress().getHostString()+"]");
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerDeath(final PlayerDeathEvent event) {
+		Player p = event.getEntity();
+		Location l = p.getLocation();
+		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！("+l.getWorld().getName()+": "+l.getBlockX()+", "+l.getBlockY()+", "+l.getBlockZ()+")");
+	}
+
+	//***** 以下通常メソッド *****
+
+	private void postIRConce(String sender, String message){
+		for (Bridge b : BridgeManager.bridges) {
+			b.endPoint.messageOut(message, sender, b.craftIRCTag, b.GameChannel.getName(), b.GameChannel.getNick());
+			break; // 同じIRCチャンネルなので1回のみのキャストにする
+		}
+	}
+
+	private String removeCC(String message){
+		// もしかしたらCraftIRC内部で自動消去されてるかも..
+		message = message.replaceAll("&([0-9A-Fa-fk-or])", "");
+		return message;
 	}
 }
