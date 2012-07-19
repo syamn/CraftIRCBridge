@@ -88,14 +88,13 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ [/"+p.getAddress().getHostString()+"]");
+		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ ("+p.getLocation()+") [/"+p.getAddress().getHostString()+"]");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(final PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		Location l = p.getLocation();
-		postIRConce("*** ", "'" + event.getPlayer().getDisplayName() + "' さんが切断しました！ ("+l.getWorld().getName()+": "+l.getBlockX()+", "+l.getBlockY()+", "+l.getBlockZ()+")");
+		postIRConce("*** ", "'" + event.getPlayer().getDisplayName() + "' さんが切断しました！ ("+p.getLocation()+")");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -107,8 +106,7 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(final PlayerDeathEvent event) {
 		Player p = event.getEntity();
-		Location l = p.getLocation();
-		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！("+l.getWorld().getName()+": "+l.getBlockX()+", "+l.getBlockY()+", "+l.getBlockZ()+")");
+		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！ ("+p.getLocation()+")");
 	}
 
 	//***** 以下通常メソッド *****
@@ -119,6 +117,11 @@ public class BridgePlayerListener implements Listener{
 			break; // 同じIRCチャンネルなので1回のみのキャストにする
 		}
 	}
+
+	private String getLocString(Location loc){
+		return loc.getWorld().getName()+": "+loc.getBlockX()+", "+loc.getBlockY()+", "+loc.getBlockZ();
+	}
+
 
 	private String removeCC(String message){
 		// もしかしたらCraftIRC内部で自動消去されてるかも..
