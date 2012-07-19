@@ -88,13 +88,13 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ ("+p.getLocation()+") [/"+p.getAddress().getHostString()+"]");
+		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ ("+getLocString(p.getLocation())+") [/"+p.getAddress().getHostString()+"]");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(final PlayerQuitEvent event) {
 		Player p = event.getPlayer();
-		postIRConce("*** ", "'" + event.getPlayer().getDisplayName() + "' さんが切断しました！ ("+p.getLocation()+")");
+		postIRConce("*** ", "'" + event.getPlayer().getDisplayName() + "' さんが切断しました！ ("+getLocString(p.getLocation())+")");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -106,7 +106,7 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(final PlayerDeathEvent event) {
 		Player p = event.getEntity();
-		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！ ("+p.getLocation()+")");
+		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！ ("+getLocString(p.getLocation())+")");
 	}
 
 	//***** 以下通常メソッド *****

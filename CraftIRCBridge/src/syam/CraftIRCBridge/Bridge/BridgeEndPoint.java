@@ -2,6 +2,7 @@ package syam.CraftIRCBridge.Bridge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import com.ensifera.animosity.craftirc.EndPoint;
 import com.ensifera.animosity.craftirc.RelayedMessage;
 
 public class BridgeEndPoint implements EndPoint{
+	public final static Logger log = CraftIRCBridge.log;
+
 	private Channel GameChannel;
 
 	BridgeEndPoint(Channel GameChannel) {
@@ -55,8 +58,8 @@ public class BridgeEndPoint implements EndPoint{
 			/*String sender = rm.getField("sender") == null ? "" : rm.getField("sender");
 			String message = rm.getField("message") == null ? "" : rm.getField("message");
 			GameChannel.announce("(IRC) " + sender + ": " + message);*/
-			GameChannel.announce(rm.getMessage(this));
 		//}
+		GameChannel.announce(rm.getMessage(this));
 	}
 
 	@Override
