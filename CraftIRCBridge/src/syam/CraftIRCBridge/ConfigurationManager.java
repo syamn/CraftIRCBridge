@@ -15,11 +15,8 @@ import java.nio.channels.FileChannel;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.base.Defaults;
 
 public class ConfigurationManager {
     // Logger

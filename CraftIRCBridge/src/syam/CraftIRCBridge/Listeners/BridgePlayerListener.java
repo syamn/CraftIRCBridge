@@ -13,14 +13,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
+import syam.CraftIRCBridge.CraftIRCBridge;
+import syam.CraftIRCBridge.Bridge.Bridge;
+import syam.CraftIRCBridge.Bridge.BridgeManager;
+
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Chatter.Result;
 import com.dthielke.herochat.ConversationChannel;
-
-import syam.CraftIRCBridge.CraftIRCBridge;
-import syam.CraftIRCBridge.Bridge.Bridge;
-import syam.CraftIRCBridge.Bridge.BridgeManager;
 
 public class BridgePlayerListener implements Listener {
     public final static Logger log = CraftIRCBridge.log;
