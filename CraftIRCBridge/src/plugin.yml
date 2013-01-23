@@ -6,4 +6,4 @@ description: Linking CraftIRC and Herochat for SakuraServer
 website: http://sakura-server.net/
 depend: [Herochat, CraftIRC]
 ##  Original Author     ##
-author: syam
+author: syamn

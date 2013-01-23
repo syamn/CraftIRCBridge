@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
 
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
@@ -62,7 +61,7 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChannelChat(final ChannelChatEvent e) {
 		if (e.getResult() == Result.ALLOWED) {
-			String message = e.getBukkitEvent().getMessage();
+			String message = e.getMessage();
 			String c = null;
 			String n = null;
 
@@ -88,7 +87,7 @@ public class BridgePlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ ("+getLocString(p.getLocation())+") [/"+p.getAddress().getHostString()+"]");
+		postIRConce("*** ", "'" + p.getDisplayName() + "' さんが接続しました！ ("+getLocString(p.getLocation())+")");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -108,8 +107,6 @@ public class BridgePlayerListener implements Listener{
 		Player p = event.getEntity();
 		postIRConce("** ", "'" + p.getDisplayName() + "' が死にました！ ("+getLocString(p.getLocation())+")");
 	}
-
-	//***** 以下通常メソッド *****
 
 	private void postIRConce(String sender, String message){
 		for (Bridge b : BridgeManager.bridges) {
